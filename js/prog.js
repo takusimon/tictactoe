@@ -1,4 +1,4 @@
-const GameBoard = ( () => {
+function GameBoard(){
     const board = [];
     const rows = 3;
     const columns = 3;
@@ -30,7 +30,7 @@ const GameBoard = ( () => {
 
     return {getBoard,putToken,printBoard};
 
-})();
+}
 
 function Cell() {
   let value = "";
@@ -48,3 +48,4 @@ function Cell() {
     getValue,
   };
 }
+
