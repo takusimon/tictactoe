@@ -13,10 +13,10 @@ function GameBoard(){
 
     const getBoard = () => board;
 
-    const putToken = (gridItem) => {
+    const putToken = (gridItem,player) => {
         const [a,b] = gridItem;
         if (board[a][b].getValue() == ""){
-            board[a][b].addToken("x");
+            board[a][b].addToken(player);
         }
     }
 
@@ -49,3 +49,44 @@ function Cell() {
   };
 }
 
+function GameController (
+    playerOneName = "player one",
+    playerTwoName = "player two"
+){
+    const board = GameBoard();
+
+    const players = [
+        {
+            name: playerOneName,
+            token: "X",
+        },
+        {
+            name:playerTwoName,
+            token: "O",
+        }
+    ];
+
+    let activePlayer = players[0];
+
+    const switchPlayerTurn = () => {
+        activePlayer = activePlayer === players[0] ? players[1]:players[0];
+    };
+
+    const getActivePlayer = () => activePlayer;
+
+    const printNewRound = () => {
+        board.printBoard();
+        console.log(`${getActivePlayer().name}'s turn.`);
+    };
+
+    const playRound = (position) => {
+        console.log(
+            `Dropping ${getActivePlayer().name}'s token into the position
+            ${position}...`
+        );
+        board.putToken(position,getActivePlayer().token);
+
+        
+    }
+
+}
