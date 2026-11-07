@@ -54,6 +54,21 @@ function GameController (
     playerTwoName = "player two"
 ){
     const board = GameBoard();
+    const winningCombinations = [
+        // Rows
+        [[0,0], [0,1], [0,2]],
+        [[1,0], [1,1], [1,2]],
+        [[2,0], [2,1], [2,2]],
+
+        // Columns
+        [[0,0], [1,0], [2,0]],
+        [[0,1], [1,1], [2,1]],
+        [[0,2], [1,2], [2,2]],
+
+        // Diagonals
+        [[0,0], [1,1], [2,2]],
+        [[0,2], [1,1], [2,0]]
+    ];
 
     const players = [
         {
@@ -79,6 +94,26 @@ function GameController (
         console.log(`${getActivePlayer().name}'s turn.`);
     };
 
+    const getWinner = () => {
+    const grid = board.getBoard();
+
+    for (const combination of winningCombinations) {
+        const [a, b, c] = combination;
+
+        const first = grid[a[0]][a[1]].getValue();
+
+        if (
+            first !== "" &&
+            first === grid[b[0]][b[1]].getValue() &&
+            first === grid[c[0]][c[1]].getValue()
+        ) {
+            return first;
+        }
+    }
+
+    return null;
+    };
+
     const playRound = (position) => {
         console.log(
             `Dropping ${getActivePlayer().name}'s token into the position
@@ -86,7 +121,14 @@ function GameController (
         );
         board.putToken(position,getActivePlayer().token);
 
-        
+        const winner = getWinner();
+
+        if (winner) {
+            console.log(`${getActivePlayer().name} wins!`)
+        }
+
+        switchPlayerTurn();
+        printNewRound();
     }
 
 }
