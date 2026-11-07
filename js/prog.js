@@ -15,9 +15,12 @@ function GameBoard(){
 
     const putToken = (gridItem,player) => {
         const [a,b] = gridItem;
-        if (board[a][b].getValue() == ""){
-            board[a][b].addToken(player);
+        if (board[a][b].getValue() !== ""){
+            return false;
         }
+
+        board[a][b].addToken(player);
+        return true;
     }
 
     
@@ -114,21 +117,46 @@ function GameController (
     return null;
     };
 
+    const getDraw = () => {
+    const grid = board.getBoard();
+
+    return grid.every(row =>
+        row.every(cell => cell.getValue() !== "")
+    );
+    };
+
     const playRound = (position) => {
         console.log(
             `Dropping ${getActivePlayer().name}'s token into the position
             ${position}...`
         );
-        board.putToken(position,getActivePlayer().token);
+        const put = board.putToken(position,getActivePlayer().token);
 
         const winner = getWinner();
 
-        if (winner) {
-            console.log(`${getActivePlayer().name} wins!`)
+        if (!put){
+            console.log("Invalid move!Try Again!");
+            return;
         }
-
+        if (winner) {
+            console.log(`${getActivePlayer().name} wins!`);
+            return;
+        }
+        if (getDraw()) {
+            console.log(`It's a draw!`);
+            return;
+        }
         switchPlayerTurn();
         printNewRound();
+    
     }
 
+        printNewRound();
+
+        return {
+            playRound,
+            getActivePlayer
+        };
 }
+
+const game = GameController();
