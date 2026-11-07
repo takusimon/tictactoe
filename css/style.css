@@ -13,6 +13,9 @@ main {
     justify-items: center;
     align-items: center;
     margin-top:3rem;
+    font-size:6rem;
+    text-align: center;
+    padding:2rem;
 }
 
 .grid-box {

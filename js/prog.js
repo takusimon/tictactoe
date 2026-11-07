@@ -56,7 +56,7 @@ function GameController (
     playerOneName = "player one",
     playerTwoName = "player two"
 ){
-    const board = GameBoard();
+    let board = GameBoard();
     const winningCombinations = [
         // Rows
         [[0,0], [0,1], [0,2]],
@@ -96,7 +96,8 @@ function GameController (
         board.printBoard();
         console.log(`${getActivePlayer().name}'s turn.`);
     };
-
+    
+    const getBoard = () => board.getBoard();
     const getWinner = () => {
     const grid = board.getBoard();
 
@@ -136,31 +137,52 @@ function GameController (
 
         if (!put){
             console.log("Invalid move!Try Again!");
-            return;
+            return "invalid!";
         }
         if (winner) {
             console.log(`${getActivePlayer().name} wins!`);
-            return;
+            return "winner!";
         }
         if (getDraw()) {
             console.log(`It's a draw!`);
-            return;
+            return "draw!";
         }
         switchPlayerTurn();
         printNewRound();
     
     }
 
-        printNewRound();
+    const restartGame = () => {
+        board = GameBoard();
+        activePlayer = players[0];
+    };
+
 
         return {
             playRound,
-            getActivePlayer
+            getActivePlayer,
+            getBoard,
+            restartGame
         };
 }
-
-
+function ScreenController (){
+    const game = GameController();
 const boardContainer = document.querySelector("main");
+const announcements = document.querySelector(".announce");
+
+const renderBoard = () => {
+    const board = game.getBoard();
+
+    board.forEach((row, rowIndex) => {
+        row.forEach((cell, columnIndex) => {
+            const element = document.getElementById(
+                `${rowIndex}${columnIndex}`
+            );
+
+            element.textContent = cell.getValue();
+        });
+    });
+};
 
 for(let i=0;i < 3;i++){
     for (let j=0;j < 3; j++){
@@ -170,3 +192,36 @@ for(let i=0;i < 3;i++){
         boardContainer.appendChild(cell);
     }
 }
+
+boardContainer.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (!target.classList.contains("grid-box")) return;
+
+    const position = [
+        Number(target.id[0]),
+        Number(target.id[1])
+    ];
+
+    const outcome = game.playRound(position);
+
+    renderBoard();
+
+    switch (outcome) {
+        case "invalid!":
+            announcements.textContent = "Cell already occupied";
+            break;
+
+        case "winner!":
+            announcements.textContent =
+                `${game.getActivePlayer().name} wins!`;
+            break;
+
+        case "draw!":
+            announcements.textContent = "It's a draw!";
+            break;
+    }
+});
+}
+
+const screen = ScreenController();
