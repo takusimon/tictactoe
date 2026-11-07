@@ -159,4 +159,14 @@ function GameController (
         };
 }
 
-const game = GameController();
+
+const boardContainer = document.querySelector("main");
+
+for(let i=0;i < 3;i++){
+    for (let j=0;j < 3; j++){
+        const cell = document.createElement("div");
+        cell.setAttribute("id",`${i}${j}`);
+        cell.classList.add("grid-box");
+        boardContainer.appendChild(cell);
+    }
+}
